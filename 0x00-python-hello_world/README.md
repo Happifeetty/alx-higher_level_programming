@@ -1,1 +1,1 @@
-Python - Hello, World
+Repository for studying Python and other high level languages.
