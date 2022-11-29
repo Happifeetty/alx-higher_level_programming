@@ -1,1 +1,1 @@
-Repository for studying Python and other high level languages.
+0x00-python-hello_world
