@@ -1,45 +1,48 @@
 #!/usr/bin/python3
+""" Reads from standard input and computes metrics"""
 
-""" script that reads stdin line by line and computes metrics """
+if __name__ == "__main__":
+    import sys
 
-import sys
+    stdin = sys.stdin
 
+    c = 0
+    size = 0
+    vd = ['200', '301', '400', '401', '403', '404', '405', '500']
+    st = {}
 
-def printsts(dic, size):
-    """ Prints information """
-    print("File size: {:d}".format(size))
-    for i in sorted(dic.keys()):
-        if dic[i] != 0:
-            print("{}: {:d}".format(i, dic[i]))
+    try:
+        for line in stdin:
+            if c == 10:
+                print("File size: {}".format(size))
+                for i in sorted(st):
+                    print("{}: {}".format(i, st[i]))
+                c = 1
+            else:
+                c = c + 1
 
+            line = line.split()
 
-sts = {"200": 0, "301": 0, "400": 0, "401": 0, "403": 0,
-       "404": 0, "405": 0, "500": 0}
+            try:
+                size = size + int(line[-1])
+            except (IndexError, ValueError):
+                pass
 
-count = 0
-size = 0
+            try:
+                if line[-2] in vd:
+                    if st.get(line[-2], -1) == -1:
+                        st[line[-2]] = 1
+                    else:
+                        st[line[-2]] = st[line[-2]] + 1
+            except IndexError:
+                pass
 
-try:
-    for line in sys.stdin:
-        if count != 0 and count % 10 == 0:
-            printsts(sts, size)
+        print("File size: {}".format(size))
+        for i in sorted(st):
+            print("{}: {}".format(i, st[i]))
 
-        stlist = line.split()
-        count += 1
-
-        try:
-            size += int(stlist[-1])
-        except:
-            pass
-
-        try:
-            if stlist[-2] in sts:
-                sts[stlist[-2]] += 1
-        except:
-            pass
-    printsts(sts, size)
-
-
-except KeyboardInterrupt:
-    printsts(sts, size)
-    raise
+    except KeyboardInterrupt:
+        print("File size: {}".format(size))
+        for i in sorted(st):
+            print("{}: {}".format(i, st[i]))
+        raise
